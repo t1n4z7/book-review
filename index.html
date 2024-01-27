@@ -3,42 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi-Page Website</title>
-    <style>
-        .page {
-            display: none; /* Hide all pages by default */
-        }
-        .page.active {
-            display: block; /* Show active page */
-        }
-    </style>
+    <title>Product Listing</title>
 </head>
 <body>
-    <div class="page" id="page1">
-        <h1>Page 1</h1>
-        <p>This is the content of Page 1.</p>
-        <button onclick="showPage('page2')">Go to Page 2</button>
-    </div>
-    <div class="page" id="page2">
-        <h1>Page 2</h1>
-        <p>This is the content of Page 2.</p>
-        <button onclick="showPage('page1')">Go to Page 1</button>
-    </div>
+    <h1>Product Listing</h1>
+    
+    <?php
+    // Sample product data (you can fetch this from a database)
+    $products = array(
+        array("name" => "Product 1", "price" => "$19.99", "description" => "Lorem ipsum dolor sit amet, consectetur adipiscing elit."),
+        array("name" => "Product 2", "price" => "$24.99", "description" => "Nulla facilisi. Integer nec turpis id est."),
+        // Add more products as needed
+    );
 
-    <script>
-        function showPage(pageId) {
-            // Hide all pages
-            var pages = document.querySelectorAll('.page');
-            pages.forEach(function(page) {
-                page.classList.remove('active');
-            });
+    // Number of products per page
+    $productsPerPage = 2;
 
-            // Show the selected page
-            var selectedPage = document.getElementById(pageId);
-            if (selectedPage) {
-                selectedPage.classList.add('active');
-            }
-        }
-    </script>
-</body>
-</html>
+    // Get current page number from URL parameter (default to 1 if not provided)
+    $currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
+
+    // Calculate starting index and ending index for products on the current page
+    $startIndex = ($currentPage - 1) * $productsPerPage;
+    $endIndex = $startIndex + $productsPerPage - 1;
+
+    // Display products on the current page
+    for ($i = $startIndex; $i <= $endIndex && $i < count($products); $i++) {
+        echo "<div>";
+        echo "<h2>{$products[$i]['name']}</h2>";
+        echo "<p><strong>Price:</strong> {$products[$i]['price']}</p>";
+        echo "<p>{$products[$i]['description']}</p>";
+        echo "</div>";
+    }
+
+    // Generate pagination links
+    $totalPages = ceil(count($products) / $productsPerPage);
+    echo "<div>";
+    echo "<p>Page {$currentPage} of {$totalPages}</p>";
+    for ($i = 1; $i <= $totalPages; $i++) {
+        echo "<a href='?page={$i}'>{$i}</a>";
+    }
+    echo "</div
